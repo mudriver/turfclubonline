@@ -1,0 +1,89 @@
+<!DOCTYPE project>
+<project name="TurfClubOnline" default="create-war-file" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<property file="build.properties" />
+	<!-- ================================================================================== -->
+	<!--                                                                                    -->
+	<!-- NOTE: Be sure to copy ${tomcat.install}/lib/catalina-ant.jar to ${ant.install}/lib -->
+	<!--                                                                                    -->
+	<!-- ================================================================================== -->
+
+
+	<!-- Configure the custom Ant tasks for the Manager application -->
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
+	<taskdef name="list" classname="org.apache.catalina.ant.ListTask" />
+	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask" />
+	<taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask" />
+	<taskdef name="start" classname="org.apache.catalina.ant.StartTask" />
+	<taskdef name="stop" classname="org.apache.catalina.ant.StopTask" />
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+
+	<!-- Configure Libraries-->
+	<!-- Maven Depends-->
+
+	<artifact:dependencies filesetId="deps.fileset">
+		<pom file="pom.xml" />
+	</artifact:dependencies>
+
+	<path id="master-classpath">
+		<pathelement path="${build.dir}" />
+		<fileset refid="deps.fileset" />
+	</path>
+
+
+	<!-- Executable Targets -->
+
+	<target name="war" depends="build">
+		<mkdir dir="${build.dir}" />
+		<war needxmlfile="false" destfile="${build.dir}/${name}.war">
+			<fileset dir="${web.content}">
+			      <include name="**/*.*"/>
+			   </fileset>
+			   <lib dir="${build.dir}/lib">
+			   </lib>
+			   <classes dir="${build.dir}/classes"/>	
+		</war>
+	</target>
+
+	<target name="build" description="Compile source tree java files">
+
+
+		<copy todir="${build.dir}/lib">
+			<fileset refid="deps.fileset" />
+			<!-- This mapper strips off all leading directory information -->
+			<mapper type="flatten" />
+		</copy>
+
+
+
+		<mkdir dir="${build.dir}/classes" />
+		<javac destdir="${build.dir}/classes" source="1.7" target="1.7">
+			<src path="${src.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<target name="setup" description="Setup supporting directories">
+		<mkdir dir="${dist}" />
+	</target>
+	<target name="create-war-file" description="Create the WAR file" depends="setup">
+		<jar destfile="${dist}/${war.filename}" basedir="${web.content}" />
+	</target>
+
+	<target name="deploy" description="Deploy web application" depends="create-war-file">
+		<deploy url="${url}" username="${username}" password="${password}" path="${path}" war="file:${dist}/${war.filename}" />
+	</target>
+
+	<target name="undeploy" description="Remove web application">
+		<undeploy url="${url}" username="${username}" password="${password}" path="${path}" />
+	</target>
+
+	<target name="reload" description="Reload web application">
+		<reload url="${url}" username="${username}" password="${password}" path="${path}" />
+	</target>
+
+	<target name="list" description="List deployed web applications">
+		<list url="${url}" username="${username}" password="${password}" />
+	</target>
+
+</project>

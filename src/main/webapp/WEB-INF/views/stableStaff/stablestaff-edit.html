@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title data-th-text="#{stablestaff.edit.page.title}">Title</title>
+
+<!-- Core CSS - Include with every page -->
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/bootstrap.css"
+	data-th-href="@{/resources/css/bootstrap.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/font-awesome-4.1.0/css/font-awesome.css"
+	data-th-href="@{/resources/font-awesome-4.1.0/css/font-awesome.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/sb-admin-2.css"
+	data-th-href="@{/resources/css/sb-admin-2.css}" />
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/select2.css"
+	data-th-href="@{/resources/css/select2.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/overrides.css"
+	data-th-href="@{/resources/css/overrides.css}" />
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+<script type="text/javascript"
+	src="../../resources/js/jquery-2.1.1.min.js"
+	data-th-src="@{/resources/js/jquery-2.1.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/validator.min.js"
+	data-th-src="@{/resources/js/validator.min.js}"></script>
+<script type="text/javascript"
+	src="../../resources/js/stableStaff/stablestaff-edit.js"
+	data-th-src="@{/resources/js/stableStaff/stablestaff-edit.js}"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+     <![endif]-->
+
+</head>
+<body>
+	<div id="pensionWarning" class="modal fade">
+		<div class="modal-dialog modal-lg" data-keyboard="false"
+			data-backdrop="static">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body text-center">
+					<p>
+						<small class="text-danger">An employee must have taxable
+							Pay to be considered for inclusion in the pension scheme
+							and/or life assurance scheme.<br /> Proof of earnings (P35) must
+							be attached now or submitted within 7 days by post to:<br/>
+					    <br/>The Turf Club,
+					    The Curragh,
+					    Co. Kildare 
+					    <br/>
+						</small>
+
+
+					</p>
+					<h2 class="text-danger">Are you sure this employee had no
+						taxable Pay?</h2>
+				</div>
+				<div class="modal-footer">
+					<div class='text-center'>
+						<button id="pension-warning-yes" type="button"
+							class="btn btn-default" data-dismiss="modal">Yes This
+							Employee Has No Taxable Pay</button>
+						<button id="pension-warning-no" type="button"
+							class="btn btn-default" data-dismiss="modal">No I Want
+							to Add Taxable Pay</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="pensionWarningOK" class="modal fade">
+		<div class="modal-dialog modal-lg" data-keyboard="false"
+			data-backdrop="static">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body text-center">
+					<p>
+						<small class="text-danger">An employee must have taxable
+							Pay to be considered for inclusion in the pension scheme
+							and/or life assurance scheme.<br /> Proof of taxable
+							Pay (P35) must
+							be attached or submitted to the Turf Club.
+						</small>
+
+
+					</p>
+					<h2 class="text-danger">No
+						taxable Pay!</h2>
+				</div>
+				<div class="modal-footer">
+					<div class='text-center'>
+						<button id="pension-warning-ok" type="button"
+							class="btn btn-default" data-dismiss="modal">Ok</button>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="pensionDateWarning" class="modal fade">
+		<div class="modal-dialog modal-lg" data-keyboard="false"
+			data-backdrop="static">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body text-center">
+					<p>The Turf Club records show that this person started work with you in 2015</p>
+					<p>
+						<small class="text-danger">An employee cannot have
+							taxable
+							Pay in 2014 if they did not work with you in that year. If our records 
+							are incorrect please contact Tricia Cullen by email
+							(tricia.cullen@turfclub.ie) or on 045 445600 with the employee name(s)
+							whose employment dates are incorrect and the correct details. 
+							Otherwise please change the earnings to €0.00 if the person has no earning for 2014</small>
+
+
+					</p>
+				</div>
+				<div class="modal-footer">
+					<div class='text-center'>
+						<button id="pension-date-warning-yes" type="button"
+							class="btn btn-default" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="noSaveWarning" class="modal fade">
+		<div class="modal-dialog modal-lg" data-keyboard="false"
+			data-backdrop="static">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body text-center">
+					<p>
+						<small class="text-danger">A new employee that has no
+							taxable Pay will not be saved as they are not required on
+							this return. </small>
+
+
+					</p>
+					<h2 class="text-danger">The information for this employee will not be saved</h2>
+				</div>
+				<div class="modal-footer">
+					<div class='text-center'>
+						<button id="nosave" type="button"
+							class="btn btn-default" data-dismiss="modal">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /#wrapper -->
+
+	<div class="container-fluid">
+		<div data-th-replace="fragments/stableStaffTopBar :: top-nav"></div>
+		<div class="jumbotron">
+			<h3 id="updateHeader" data-th-if="${update}" class="col-sm-12"
+				data-th-text="#{stableStaff.update.head.title} + ' ' + ${employee.employeesFirstname} + ' ' + ${employee.employeesSurname}">Edit
+				HunterCert</h3>
+			<h3 id="newHeader"
+				data-th-if="${employee.employeesFirstname} == null"
+				class="col-sm-12" data-th-text="'New Employee'"></h3>
+			<h3 id="editHeader" data-th-if="${edit}" class="col-sm-12"
+				data-th-text="#{stableStaff.edit.head.title} + ' ' + ${employee.employeesFirstname} + ' ' + ${employee.employeesSurname}">Edit
+				HunterCert</h3>
+
+
+
+			<form id="employeeEditForm" class="form-horizontal" action="#"
+				data-th-action="@{/trainersEmployeesOnline/save(saveMessage='You have successfullly updated employee: ' + ${employee.employeesFirstname} + ' ' + ${employee.employeesSurname})}"
+				method="post">
+
+
+
+				<input type='hidden' id="employeeId" data-th-field="${employee.employeesEmployeeId}"></input>
+				<input data-th-field="${employee.employeesHasTaxableEarnings}"
+					type='hidden' id='has-taxable'></input> <input
+					data-th-field="${employee.employeesIsNew}" type='hidden'
+					id='is-new'></input>
+
+				<div class="row last-year-no-edit">
+
+
+					<div id="title-section" class="col-xs-6">
+						<div class="form-group">
+							<div class="col-xs-6 text-right">
+								<label class="control-label " for="title"
+									data-th-text="#{stableStaff.edit.title.label}"></label>
+							</div>
+							<div class="col-xs-6">
+								<input class="form-control"
+									data-title="title" data-th-field="${employee.employeesTitle}" type='text'
+									id='title'></input> <input type="hidden" id="titles"
+									data-th-value="  ${titlesEnum}"></input> <span
+									class="help-block with-errors"></span>
+							</div>
+
+
+						</div>
+					</div>
+					<div class="col-xs-3">
+						<div class="form-group">
+							<div class="col-xs-4 text-right">
+								<label class="control-label" for="sex"
+									data-th-text="#{stableStaff.edit.sex.label}"></label>
+							</div>
+							<div class="col-xs-8">
+								<select data-th-field="${employee.employeesSex}" id='sex'
+									class="form-control" data-error="Please Select"
+									required='required'>
+									<option value=''></option>
+									<option data-th-each="sex : ${sexEnum}" data-th-value="${sex}"
+										data-th-text="${sex}">Please Select</option>
+								</select> <span class="help-block with-errors"></span>
+							</div>
+
+
+						</div>
+					</div>
+
+
+
+					<!--  
+						<div class="form-group">
+								<label class="control-label" for="sex"
+									data-th-text="#{stableStaff.edit.sex.label}"></label>
+						
+						
+							<select data-th-field="${employee.employeesSex}" id='sex'
+								class="form-control" data-error="Please Select"
+								required='required'>
+								<option value=''></option>
+								<option data-th-each="sex : ${sexEnum}" data-th-value="${sex}"
+									data-th-text="${sex}">Please Select</option>
+							</select>
+<span class="help-block with-errors"></span>
+						</div>
+				
+-->
+
+
+					<div class="col-xs-3"></div>
+				</div>
+				<!-- 
+				<div class="row form-group">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="sex"
+							data-th-text="#{stableStaff.edit.sex.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<select data-th-field="${employee.employeesSex}" id='sex'
+							class="form-control" data-error="Please Select"
+							required='required'>
+							<option value=''></option>
+							<option data-th-each="sex : ${sexEnum}" data-th-value="${sex}"
+								data-th-text="${sex}">Please Select</option>
+						</select>
+
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+ -->
+				<div class=" row form-group last-year-no-edit">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="firstName"
+							data-th-text="#{stableStaff.edit.firstName.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input placeholder='You must enter first name' class="form-control"
+							data-th-field="${employee.employeesFirstname}" id='firstName'
+							data-error="You must enter first name" required='required'
+							maxlength="200"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+				<div class=" row form-group last-year-no-edit">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="surName"
+							data-th-text="#{stableStaff.edit.surName.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" placeholder='You must enter a surname'
+							data-th-field="${employee.employeesSurname}" id='surName'
+							data-error="You must enter a surname" required='required' maxlength="200"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+				<div class=" row form-group last-year-no-edit">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="dateOfBirth"
+							data-th-text="#{stableStaff.edit.dob.label}"></label>
+					</div>
+					<div class="col-xs-6">
+
+						<div class="input-group">
+							<span id="date-of-birth-button" class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span> <input data-dateofbirth="dateofbirth" class="form-control"
+								placeholder='You must enter a date of birth in format:(dd/mm/yyyy)'
+								data-th-field="${employee.employeesDateOfBirth}"
+								id='dateOfBirth' pattern="\d{1,2}/\d{1,2}/\d{4}"
+								data-error="You must enter a date of birth in format:(dd/mm/yyyy)" required='required'
+								maxlength="10"></input>
+
+						</div>
+
+
+
+						<!--  <label for="dateOfBirth" class=" input-group-addon btn"><span class="glyphicon glyphicon-calendar"></span>
+
+                </label>
+						<input data-dateofbirth="dateofbirth" class="form-control date-picker"
+							placeholder='Date of birth (dd/mm/yyyy)'
+							data-th-field="${employee.employeesDateOfBirth}" id='dateOfBirth'
+							pattern="\d{1,2}/\d{1,2}/\d{4}"
+							data-error="Date of birth needed dd/MM/yyyy" required='required' maxlength="10"></input>
+    
+-->
+
+
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+
+
+
+
+
+
+
+
+
+				<div data-th-if="${employeeHistory.ehHoursWorked != null}"
+					class=" row form-group card last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="hoursWorked"
+							data-th-text="#{stableStaff.edit.hours.label}"></label>
+					</div>
+					<div class="col-xs-6">
+
+						<select data-th-field="${employeeHistory.ehHoursWorked}"
+							id='hoursWorked' class="form-control"
+							data-error="Please select the number of hours"
+							required='required'>
+							<option value=''></option>
+							<option data-th-each="hours : ${hoursEnum}"
+								data-th-value="${hours}" data-th-text="${hours}">Please
+								Select</option>
+						</select>
+						<div class="overlay-transparent">You cannot edit hours
+							worked at this time</div>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+				<div data-th-if="${employee.teCard != null}"
+					class=" row form-group card last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label"
+							data-th-text="#{stableStaff.edit.cardType.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<select id='cardType' class="form-control"
+							data-th-field="${employee.teCard.cardsCardType}">
+							<option value=''></option>
+							<option data-th-each="cardType : ${cardTypeEnum}"
+								data-th-value="${cardType}" data-th-text="${cardType}">Please
+								Select</option>
+						</select>
+						<div class="overlay-transparent">You cannot edit card
+							details at this time</div>
+					</div>
+					<div class="col-xs-3"></div>
+				</div>
+
+				<div data-th-if="${employee.employeesHriAccountNo != null}"
+					class=" row form-group card last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label data-th-text="#{stableStaff.edit.hriAcc.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							placeholder="HRI Account No. if applicable" pattern="\w{5}"
+							data-th-field="${employee.employeesHriAccountNo}" id='hriAccNo'></input>
+
+						<div class="overlay-transparent">You cannot edit HRI Account
+							No. at this time</div>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+				<!--  <div id="previously-held-card-section"
+					class=" row form-group new-only">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="held-card"
+							data-th-text="#{stableStaff.edit.previousCard.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" type="hidden" id="held-card"
+							data-th-field="${employee.employeesPossiblePreviouslyAdded}"></input>
+						<div class="btn-group btn-group-justified"
+							id="previously-held-card">
+							<div class="btn-group ">
+								<button type="button" id="held-card-yes" class="btn btn-default">Yes
+								</button>
+							</div>
+							<div class="btn-group">
+								<button id="held-card-no" type="button" class="btn btn-default">No
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+
+				</div>-->
+
+
+
+
+
+				<div id="taxable-section" class=" row form-group">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="taxable" id="taxable-label"
+							data-th-text="#{stableStaff.edit.hasearnings.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" type="hidden" id="taxable-focus"></input>
+						<div class="btn-group btn-group-justified" id="taxable">
+							<div class="btn-group ">
+								<input data-taxable="taxable" type="button" id="yes-pension" class="btn btn-default" value="Yes"/>
+								
+							</div>
+							<div class="btn-group">
+								<input data-taxable="taxable" type="button" id="no-pension" class="btn btn-default" value="No"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-3 help-block with-errors">
+					</div>
+
+				</div>
+
+				<div id="earnings-section"
+					class=" row form-group pension last-year-edit">
+					<div class="col-xs-3 text-right">
+						<label
+							id="earnings-label" class="control-label" for="earnings"
+							data-th-text="#{stableStaff.edit.earnings.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" required='required' type="text"
+							 step='0.01' maxLength="9"
+							placeholder="Enter Pay as per your year P35 (Enter 0 if no Taxable Pay in year)"
+							data-th-field="${employeeHistory.ehEarnings}" id='earnings' data-error="Enter Pay as per your year P35 (Enter 0 if no Taxable Earnings in year)"></input>
+
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+
+
+
+				<div class=" row form-group pension last-year-edit" id="pps-section">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="ppsNumber"
+							data-th-text="#{stableStaff.edit.pps.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" placeholder='You must enter a PPS no. or National Insurance no. in the correct format'
+							data-th-field="${employeeHistory.ehPpsNumber}" id='ppsNumber'
+							pattern="([0-9]{7}[a-zA-Z]{1,2}|[a-zA-Z]{2}[0-9]{6}[a-zA-Z]{1})" data-error="You must enter a PPS no. in the correct format (7 digits &#38; 1 or 2 letters) or a National Insurance no. (2 digits &#38; 6 letters &#38; 1 number)"
+							required='required' maxLength="9"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+				
+				
+				<div class=" row form-group last-year-hide pension">
+					<div class="col-xs-3 text-right">
+						<label class="control-label"
+							data-th-text="#{stableStaff.edit.empCat.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<select data-error="You must select an employment category" required='required'
+							data-th-field="${employeeHistory.ehEmploymentCategory}"
+							id='empCat' class="form-control">
+							<option value=''></option>
+							<option data-th-each="empCat : ${employmentCatEnum}"
+								data-th-value="${empCat}" data-th-text="${empCat}">Please
+								Select</option>
+						</select>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+				<div data-th-if="${employee.getEmployeesIsNew()}"
+					id="date-from-section"
+					class=" row form-group last-year-hide date-from-section">
+					<div class="col-xs-3 text-right">
+						<label data-th-text="#{stableStaff.edit.dateFrom.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<div class="input-group">
+							<span id="date-from-button" class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span> <input class="datepicker form-control"
+								data-th-value="${employeeHistory.ehDateFrom}"
+								data-datechecker="date"
+								placeholder="Date employee started in your employment. (dd/MM/yyyy)"
+								data-th-field="${employeeHistory.ehDateFrom}" id='dateFrom'
+								required="required" maxlength="10"></input>
+						</div>
+					</div>
+					<div class="help-block with-errors col-xs-3 "></div>
+				</div>
+
+				<div  
+					data-th-if="${employeeHistory.ehDateFrom !=null} and ${!employee.getEmployeesIsNew()}"
+					id="date-from-section"
+					class=" row form-group last-year-hide date-from-section">
+					<div class="col-xs-3 text-right">
+						<label data-th-text="#{stableStaff.edit.dateFrom.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<div class="input-group">
+							<span id="date-from-button" class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span><input class="datepicker form-control"
+							data-th-value="${employeeHistory.ehDateFrom}"
+							data-datechecker="date"
+							placeholder="Date employee started in your employment. (dd/MM/yyyy)"
+							data-th-field="${employeeHistory.ehDateFrom}" id='dateFrom'
+							disabled="disabled" readonly="readonly"></input>
+						</div>
+					</div>
+					<div class="help-block with-errors col-xs-3 "></div>
+				</div>
+				<div
+					data-th-if="${employeeHistory.ehDateTo ==null} or ${employee.getEmployeesIsNew()}"
+					id="date-to-section" class=" row form-group">
+					<div class="col-xs-3 text-right">
+						<label
+							
+							data-th-text="#{stableStaff.edit.dateTo.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<div class="input-group">
+							<span id="date-to-button" class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						<input class="form-control"
+							data-th-value="${employeeHistory.ehDateTo}"
+							placeholder="Date employee left your employment. Leave blank if still employed (dd/MM/yyyy)"
+							data-datechecker="date"
+							data-th-field="${employeeHistory.ehDateTo}" id='dateTo'
+							maxlength="10"></input>
+</div>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+				<!-- If the date to is not empty and the employee is not new block edit of this field -->
+				<div
+					data-th-if="${employeeHistory.ehDateTo !=null} and ${!employee.getEmployeesIsNew()}"
+					id="date-to-section" class=" row form-group last-year-hide ">
+					<div class="col-xs-3 text-right">
+						<label
+							
+							data-th-text="#{stableStaff.edit.dateTo.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<div class="input-group">
+							<span id="date-to-button" class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						<input class="form-control" data-datechecker="date"
+							data-th-value="${employeeHistory.ehDateTo}"
+							placeholder="Date employee left your employment. Leave blank if still employed (dd/MM/yyyy)"
+							data-th-field="${employeeHistory.ehDateTo}" id='dateTo'
+							maxlength="10" disabled="disabled" readonly="readonly"></input>
+						</div>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+
+			
+				<div class=" row form-group pension address last-year-remove">
+					
+					<h5 class="white">Employee's Permanent Contact Details</h5>
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="address1"
+							data-th-text="#{stableStaff.edit.address1.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" placeholder='Enter address line 1 (Leave blank if not required)'
+							data-th-field="${employee.employeesAddress1}" id='address1'
+							maxlength="200"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+				<div class=" row form-group pension address last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="address2"
+							data-th-text="#{stableStaff.edit.address2.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							placeholder='Enter address line 2 (Leave blank if not required)'
+							data-th-field="${employee.employeesAddress2}" id='address2'
+							maxlength="200"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+				<div class=" row form-group pension address last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="address3"
+							data-th-text="#{stableStaff.edit.address3.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" placeholder='You must enter a city or town'
+							data-error="You must enter a city or town" required='required'
+							data-th-field="${employee.employeesAddress3}" id='address3'
+							maxlength="200"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+				<div id="address4-section"
+					class=" row form-group pension address last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="address4"
+							data-th-text="#{stableStaff.edit.address4.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							data-th-field="${employee.employeesAddress4}" type='text'
+							data-county="county" id='address4'></input> <input type="hidden" id="counties"
+							data-th-value="  ${countiesEnum}"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+				<div class=" row form-group pension address last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label for="address5"
+							data-th-text="#{stableStaff.edit.postcode.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							placeholder='Post Code (if applicable)'
+							data-th-field="${employee.employeesPostCode}" id='postCode'
+							maxlength="20"></input>
+					</div>
+					<div class="col-xs-3"></div>
+				</div>
+
+				<div id="address5-section"
+					class=" row form-group pension last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label
+							class="control-label" for="address5"
+							data-th-text="#{stableStaff.edit.address5.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							data-th-field="${employee.employeesAddress5}" type='text'
+							data-country="country" id='address5'></input> <input type="hidden" id="countries"
+							 data-th-value="${countriesEnum}"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+
+				<div class=" row form-group pension last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="nationality"
+							data-th-text="#{stableStaff.edit.nationality.label}"></label>
+					</div>
+					<div class="col-xs-6">
+
+						<select required='required'
+							data-error="Please select or type a nationality"
+							data-th-field="${employee.employeesNationality}" id='nationality'
+							class="form-control">
+							<option value=''></option>
+							<option data-th-each="national : ${nationalityEnum}"
+								data-th-value="${national}" data-th-text="${national}">Please
+								Select</option>
+						</select>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+
+				<div class=" row form-group pension last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="phoneNo"
+							data-th-text="#{stableStaff.edit.phone.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							placeholder='Please enter a landline no. (Digits only min. 7)'
+							data-th-field="${employee.employeesPhoneNo}" id='phoneNo'
+							type="number" data-minlength="7" maxlength="20"
+							data-match-error="Phone Number Digits Only"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+
+				<div class=" row form-group pension last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="mobileNo"
+							data-th-text="#{stableStaff.edit.mobile.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control" placeholder='Please enter a mobile phone no. (Digits only min. 7)'
+							data-th-field="${employee.employeesMobileNo}" id='mobileNo'
+							type="number" data-minlength="7" maxlength="20"
+							data-emailorphone="phone"></input>
+					</div>
+					<div class="col-xs-3 help-block with-errors"></div>
+				</div>
+
+				<div class=" row form-group pension last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="email"
+							data-th-text="#{stableStaff.edit.email.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input placeholder='Please enter an email address' class="form-control"
+							data-th-field="${employee.employeesEmail}" id='email'
+							data-emailorphone="email" maxlength="200" type="email"></input>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+
+				<div class=" row form-group pension last-year-remove">
+					<div class="col-xs-3 text-right">
+						<label class="control-label" for="maritalStatus"
+							data-th-text="#{stableStaff.edit.marital.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<select data-th-field="${employee.employeesMaritalStatus}"
+							id='marital' class="form-control"
+							data-error="You must select a civil status" required='required'>
+							<option value=''></option>
+							<option data-th-each="maritalstatus : ${maritalEnum}"
+								data-th-value="${maritalstatus}" data-th-text="${maritalstatus}"></option>
+						</select>
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+
+
+
+				<div class=" row form-group pension last-year-edit">
+					<div class="col-xs-3 text-right">
+						<label for="comments"
+							data-th-text="#{stableStaff.edit.comments.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<textarea id='comments' data-th-field="${employee.employeesComments}" class="form-control" placeholder="You may wish to add relevant comments regarding this employee if not leave blank" rows="4" ></textarea>
+					
+
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+				<!--  
+				<div class=" row form-group pension">
+					<div class="col-xs-3 text-right">
+						<label for="reportTypeSel"
+							data-th-text="#{stableStaff.edit.spouse.label}"></label>
+					</div>
+					<div class="col-xs-6">
+						<input class="form-control"
+							data-th-field="${employee.employeesSpouseName}" id='spouse'></input>
+
+					</div>
+					<div class="help-block with-errors col-xs-3"></div>
+				</div>
+				-->
+
+
+
+
+
+
+
+
+
+
+
+
+				<!-- Buttons  -->
+				<div id="submit-buttons" class="row form-group buttons">
+					<div class="col-xs-3 text-right"></div>
+					<div class="col-xs-6 text-center">
+
+						<div class="row">
+							<h4 id="detail-complete">
+								<small>All required details complete. No further detail required as this person does not have taxable Pay</small>
+							</h4>
+						</div>
+						<div class="btn-group">
+
+							<button id="submitButton" type="button" class="btn btn-primary"
+								data-th-text="#{stableStaff.edit.save.button}">Submit</button>
+							<a href="#" data-th-href="@{/trainersEmployeesOnline/}">
+								<button type="button" id="cancel-button"
+									class="btn btn-default active"
+									data-th-text="#{stableStaff.edit.cancel.button}">Cancel</button>
+							</a>
+						</div>
+					</div>
+					<div class="col-xs-3"></div>
+
+
+
+				</div>
+			</form>
+
+
+
+
+
+		</div>
+
+
+
+
+
+	</div>
+
+	<!-- END JUMBOTRON TAG -->
+
+
+	<!-- END CONTAINER TAG -->
+
+
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap.min.js"
+		data-th-src="@{/resources/js/bootstrap.min.js}"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+	<script src="../../resources/js/select2.js" type="text/javascript"
+		data-th-src="@{/resources/js/select2.js}"></script>
+	<!-- SB Admin Scripts - Include with every page -->
+
+
+
+
+</body>
+</html>

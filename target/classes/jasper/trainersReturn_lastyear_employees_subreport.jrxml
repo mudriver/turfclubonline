@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
+<!-- 2016-11-09T12:50:06 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="trainers_return_old_employees" pageWidth="554" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a3ac6350-2ad0-411f-802c-608072b169fe">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="P2PDB_Connection"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<parameter name="trainerId" class="java.lang.Integer"/>
+	<parameter name="startDate" class="java.lang.String"/>
+	<parameter name="earningsDateFrom" class="java.lang.String"/>
+	<parameter name="earningsDateTo" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM ( SELECT `employees_employee_id`,`employees_title` , `employees_surname` , `employees_firstname`, `employees_date_of_birth`, `employees_nationality`, `employees_sex`, `employees_marital_status`, `employees_spouse_name`, `employees_address1` , `employees_address2`, `employees_address3`, `employees_address4`, `employees_address5`, `employees_post_code`, `employees_phone_no`, `employees_mobile_no`, `employees_email`, `employees_comments` FROM trainers.te_employees LEFT JOIN trainers.te_employment_history ON trainers.te_employees.employees_employee_id = trainers.te_employment_history.eh_employee_id WHERE trainers.te_employment_history.eh_trainer_id = $P{trainerId} AND trainers.te_employees.employees_last_updated >=$P{startDate}  AND trainers.te_employment_history.eh_date_to IS NOT NULL AND trainers.te_employment_history.eh_date_from>=$P{earningsDateFrom} AND trainers.te_employees.employees_employee_id NOT IN (SELECT trainers.te_employees.employees_employee_id FROM trainers.te_employees LEFT JOIN trainers.te_employment_history ON trainers.te_employees.employees_employee_id = trainers.te_employment_history.eh_employee_id WHERE trainers.te_employment_history.eh_trainer_id = $P{trainerId} AND trainers.te_employment_history.eh_date_to IS NULL) GROUP BY `eh_employee_id` ORDER BY trainers.te_employees.employees_surname , trainers.te_employees.employees_firstname) as employees LEFT JOIN (SELECT ROUND(SUM(`eh_earnings`), 2) as eh_earnings, MAX(`eh_pps_number`) as eh_pps_number, eh_employee_id, eh_employment_category FROM trainers.te_employment_history WHERE trainers.te_employment_history.eh_date_from >=$P{earningsDateFrom} AND trainers.te_employment_history.eh_date_from <=$P{earningsDateTo} AND `eh_trainer_id` = $P{trainerId} GROUP BY `eh_employee_id`) as histories ON employees.employees_employee_id = histories.eh_employee_id ORDER BY employees_surname , employees_firstname]]>
+	</queryString>
+	<field name="employees_employee_id" class="java.lang.Integer"/>
+	<field name="employees_title" class="java.lang.String"/>
+	<field name="employees_surname" class="java.lang.String"/>
+	<field name="employees_firstname" class="java.lang.String"/>
+	<field name="employees_date_of_birth" class="java.sql.Date"/>
+	<field name="employees_nationality" class="java.lang.String"/>
+	<field name="employees_sex" class="java.lang.String"/>
+	<field name="employees_marital_status" class="java.lang.String"/>
+	<field name="employees_spouse_name" class="java.lang.String"/>
+	<field name="employees_address1" class="java.lang.String"/>
+	<field name="employees_address2" class="java.lang.String"/>
+	<field name="employees_address3" class="java.lang.String"/>
+	<field name="employees_address4" class="java.lang.String"/>
+	<field name="employees_address5" class="java.lang.String"/>
+	<field name="employees_post_code" class="java.lang.String"/>
+	<field name="employees_phone_no" class="java.lang.String"/>
+	<field name="employees_mobile_no" class="java.lang.String"/>
+	<field name="employees_email" class="java.lang.String"/>
+	<field name="employees_comments" class="java.lang.String"/>
+	<field name="eh_earnings" class="java.lang.Double"/>
+	<field name="eh_pps_number" class="java.lang.String"/>
+	<field name="eh_employee_id" class="java.lang.Integer"/>
+	<field name="eh_employment_category" class="java.lang.String"/>
+	<detail>
+		<band height="169" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="97" width="159" height="20" uuid="58bad6c1-0793-438d-b3ba-c0520c46a206"/>
+				<textElement>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eh_pps_number}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="97" width="110" height="20" uuid="1f8ebfa5-0754-4ef7-8fa8-b6595b585397"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[PPS Number ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="59" width="159" height="19" uuid="3885e779-64c0-4762-89d8-6e6ae43219d4"/>
+				<textElement>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{employees_date_of_birth})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="59" width="110" height="19" uuid="368da7b0-9343-4e70-a911-02b8497bd2f3"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Date of Birth]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="78" width="159" height="19" uuid="7145b022-6a17-42cf-a867-cf9fc087cf1e"/>
+				<textElement>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{employees_sex}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="78" width="110" height="19" uuid="afd03a08-e660-4c18-9831-ac511dab8542"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="39" width="270" height="20" uuid="0dc1a05c-1b2f-43ad-8edf-6e196eb9d70b"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Employee Detail]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="117" width="159" height="30" uuid="43c77071-45c9-43ec-ace9-d0ba418ffe7a"/>
+				<textElement>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eh_earnings}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="117" width="110" height="30" uuid="a76b7d9c-b8cc-4264-a7e5-1c16299202d4"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[$P{previousYear}+ " Taxable Pay In Your Employment"]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="147" width="159" height="20" uuid="9c66ec87-311e-48c7-b394-1a7df9ccb68c"/>
+				<textElement>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eh_employment_category}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="147" width="110" height="20" uuid="a1368f4f-b4c6-4199-996b-b041e760bfcf"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Employment Category]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="41" width="192" height="50" uuid="2763022f-710a-452b-9756-1eb974f8314d"/>
+				<textElement>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{employees_comments}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="270" y="41" width="90" height="50" uuid="89597630-96b3-4ef5-9943-149950d06ebc"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Comments]]></text>
+			</staticText>
+			<line>
+				<reportElement x="269" y="40" width="1" height="127" uuid="08f8c264-891d-4938-95df-e491476b0487"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="554" height="20" uuid="56213221-8b72-40e3-b797-5853f24102ff"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Employee]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="21" width="110" height="19" uuid="6f864fbd-e51f-402d-8d3c-26f5dedcb39a"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="21" width="380" height="18" uuid="57707f86-0b19-4ad7-a1e1-536fe4420c5b"/>
+				<textFieldExpression><![CDATA[$F{employees_title} + " " + $F{employees_firstname} + " " + $F{employees_surname}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="168" width="553" height="1" uuid="62116735-9039-4ffa-961d-de922b73b739"/>
+			</line>
+			<line>
+				<reportElement x="0" y="40" width="553" height="1" uuid="dcda33d9-4a71-490e-9649-bd72a2b633a5"/>
+			</line>
+		</band>
+	</detail>
+	<noData>
+		<band height="25">
+			<staticText>
+				<reportElement x="1" y="2" width="554" height="20" uuid="74e26713-c12b-4b73-8698-0c565deb7379"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[No employees who left your employment last year]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

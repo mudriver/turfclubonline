@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+/*
+ * jQuery File Upload Plugin Demo 9.1.0
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2010, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+-->
+<html>
+<head>
+<!-- Force latest IE rendering engine or ChromeFrame if installed -->
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<![endif]-->
+
+<title>jQuery File Upload Demo</title>
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/bootstrap.css"
+	data-th-href="@{/resources/css/bootstrap.css}" />
+
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
+<script type="text/javascript"
+	src="../../resources/js/jquery-2.1.1.min.js"
+	data-th-src="@{/resources/js/jquery-2.1.1.min.js}"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap.min.js"
+		data-th-src="@{/resources/js/bootstrap.min.js}"></script>
+<link type="text/css" rel="stylesheet"
+	data-th-href="@{/resources/js/plugins/dropzone/dropzone.min.css}" />
+<script type="text/javascript"
+		data-th-src="@{/resources/js/plugins/dropzone/dropzone.js}"></script>
+</head>
+<body>
+<form action="/file-upload"
+      class="dropzone"
+      id="my-awesome-dropzone"></form>
+
+<div id="previewtemplate">
+<div class="dz-preview dz-file-preview">
+  <div class="dz-details">
+    <div class="dz-filename"><span data-dz-name=""></span></div>
+    <div class="dz-size" data-dz-size=""></div>
+    <img data-dz-thumbnail="" />
+  </div>
+  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
+  <div class="dz-success-mark"><span>Sucess</span></div>
+  <div class="dz-error-mark"><span>X</span></div>
+  <div class="dz-error-message"><span data-dz-errormessage=""></span></div>
+  <img data-th-src="@{/resources/img/redx.jpg}" alt="Click me to remove the file." data-dz-remove="" />
+</div>
+</div>
+</body> 
+</html>

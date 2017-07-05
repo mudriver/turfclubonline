@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.2.0  -->
+<!-- 2015-04-10T13:11:57 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VetReports_HorseDetail_SubReport" pageWidth="554" pageHeight="842" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a3ac6350-2ad0-411f-802c-608072b169fe">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="P2PDB_Connection"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<parameter name="Horse" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT combined_report, 
+	combined_report_type
+	,combined_horse
+	,combined_date
+	,combined_meeting
+	,combined_horse_number
+	,combined_race_number
+FROM (
+	SELECT *
+	FROM (
+		SELECT CASE 
+				WHEN report_type = "RIDER REPORT"
+					THEN CASE 
+							WHEN SUBSTR(report, LOCATE("trained by", report)) LIKE "%mount%"
+								THEN vetreports.SPLIT_STR(report, "mount", 2)
+							WHEN SUBSTR(report, LOCATE("trained by", report)) LIKE "%Clerk of Scales that%"
+								THEN vetreports.SPLIT_STR(report, "Clerk of Scales that", 2)
+							WHEN SUBSTR(report, LOCATE("trained by", report)) LIKE "%Secretaries that%"
+								THEN vetreports.SPLIT_STR(report, "Secretaries that", 2)
+							ELSE "ERROR"
+							END
+				WHEN report_type = "TRAINER REPORT"
+					THEN CASE 
+							WHEN SUBSTR(report, LOCATE("reported", report)) LIKE "%charge%"
+								THEN vetreports.SPLIT_STR(report, "charge", 2)
+							WHEN SUBSTR(report, LOCATE("reported", report)) LIKE "%was%"
+								THEN vetreports.SPLIT_STR(report, "was", 2)
+							WHEN SUBSTR(report, LOCATE("reported", report)) LIKE "%that%"
+								THEN vetreports.SPLIT_STR(report, "that", 2)
+							ELSE "ERROR"
+							END
+				WHEN report_type = "STEWARDS REPORT"
+					THEN CASE 
+							WHEN SUBSTR(report, LOCATE("placed", report)) LIKE "%mount%"
+								THEN vetreports.SPLIT_STR(report, "mount", 2)
+							WHEN SUBSTR(report, LOCATE("placed", report)) LIKE "%reported%"
+								THEN vetreports.SPLIT_STR(report, "reported", 2)
+							WHEN SUBSTR(report, LOCATE("trained", report)) LIKE "%reported%"
+								THEN vetreports.SPLIT_STR(report, "reported", 2)
+							WHEN SUBSTR(report, LOCATE("reported", report)) LIKE "%that%"
+								THEN vetreports.SPLIT_STR(report, "that", 2)
+							ELSE "ERROR"
+							END
+				WHEN report_type = "VET REPORT"
+					THEN CASE 
+							WHEN SUBSTR(report, LOCATE("trained", report)) LIKE "%was%"
+								THEN vetreports.SPLIT_STR(report, "was", 2)
+							WHEN SUBSTR(report, LOCATE("that", report)) LIKE "%that%"
+								THEN vetreports.SPLIT_STR(report, "that", 2)
+							ELSE "ERROR"
+							END
+				WHEN report_type = "OTHER REPORT"
+					THEN CASE 
+							WHEN SUBSTR(report, LOCATE("reported", report)) LIKE "%was%"
+								THEN vetreports.SPLIT_STR(report, "was", 2)
+							ELSE "ERROR"
+							END
+				ELSE "NO REPORT TYPE"
+				END AS combined_report, 'Post Race Report' AS combined_report_type
+			,meeting_date AS combined_date
+			,meeting AS combined_meeting
+			,horse AS combined_horse
+			,horse_number AS combined_horse_number
+			,race_number AS combined_race_number
+		FROM (
+			SELECT CASE 
+					WHEN report LIKE "%rider of%trained by%"
+						THEN "RIDER REPORT"
+					WHEN report LIKE "%trainer of%reported%"
+						THEN "TRAINER REPORT"
+					WHEN report LIKE "%The Stewards%reported%"
+						THEN "STEWARDS REPORT"
+					WHEN report LIKE "%The Turf Club Veter%reported%"
+						THEN "VET REPORT"
+					WHEN report LIKE "%reported to the Stewards%"
+						THEN "OTHER REPORT"
+					WHEN report LIKE "%reported to the Clerk of Scales%"
+						THEN "OTHER REPORT"
+					ELSE "ERROR"
+					END AS report_type
+				,report
+				,meeting_date
+				,meeting
+				,horse
+				,horse_number
+				,race_number
+			FROM (
+				SELECT d.enq_text AS report
+					,d.enq_date AS meeting_date
+					,d.enq_meeting AS meeting
+					,Horse_Name AS horse
+					,Horse_Num AS horse_number
+					,Race_No AS race_number
+				FROM vetreports.vetreports_enquiries d
+				LEFT JOIN vetreports.vetreport_racecard r ON enq_date = DateRan
+					AND `enq_meeting` = Meeting
+					AND enq_text LIKE CONCAT (
+						'%'
+						,Horse_Name
+						,'%'
+						)
+				WHERE Horse_Name LIKE $P{Horse}
+					AND enq_date >= '2013-01-01'
+					AND enq_is_deleted = 0
+					AND (
+						enq_text LIKE '%reported to the Clerk%'
+						OR enq_text LIKE '%reported to the Stewards%'
+						OR enq_text LIKE '%reported to the Office%'
+						)
+				) AS EnquiryReports
+			) AS EnquiryReportsWithType
+		) AS EnquiryReportsInjuries
+	WHERE (
+			combined_report LIKE "%lame%"
+			OR combined_report LIKE "%hung%"
+			OR combined_report LIKE "%hanging%"
+			OR combined_report LIKE "%stone bruise%"
+			OR combined_report LIKE "%bruised foot%"
+			OR combined_report LIKE "%stiff%"
+			OR combined_report LIKE "%sore%"
+			OR combined_report LIKE "%lost%action%"
+			OR combined_report LIKE "%coordination%"
+			OR combined_report LIKE "%shins%"
+			OR combined_report LIKE "%stumbled%"
+			OR combined_report LIKE "%veterinary advice%"
+			OR combined_report LIKE "%stressed%"
+			OR combined_report LIKE "%injured%"
+			OR combined_report LIKE "%injury"
+			)
+	
+	UNION
+	
+	SELECT `report_content` AS combined_report
+	     , 'Non Runner' AS combined_report_type
+		,`DateRan` AS combined_date
+		,`Meeting` AS combined_meeting
+		,`Horse_Name` AS combined_horse
+		,`Horse_Num` AS combined_horse_number
+		,`Race_No` AS combined_race_number
+	FROM vetreports.vetreport_reports
+	LEFT JOIN vetreports.vetreport_racecard ON `report_racecard_id` = row_id
+	WHERE `report_type` = "NonRunner"
+		AND Horse_Name LIKE $P{Horse}
+		AND (
+			report_content LIKE "%lame%"
+			OR report_content LIKE "%hung%"
+			OR report_content LIKE "%hanging%"
+			OR report_content LIKE "%stone bruise%"
+			OR report_content LIKE "%bruised foot%"
+			OR report_content LIKE "%stiff%"
+			OR report_content LIKE "%sore%"
+			OR report_content LIKE "%lost%action%"
+			OR report_content LIKE "%coordination%"
+			OR report_content LIKE "%shins%"
+			OR report_content LIKE "%stumbled%"
+			OR report_content LIKE "%veterinary advice%"
+			OR report_content LIKE "%stressed%"
+			OR report_content LIKE "%injured%"
+			OR report_content LIKE "%injury"
+			)
+	
+	UNION
+	
+	SELECT `report_content` AS combined_report
+	 , 'Track / Pre-Race' AS combined_report_type
+		,`DateRan` AS combined_date
+		,`Meeting` AS combined_meeting
+		,`Horse_Name` AS combined_horse
+		,`Horse_Num` AS combined_horse_number
+		,`Race_No` AS combined_race_number
+	FROM vetreports.vetreport_reports
+	LEFT JOIN vetreports.vetreport_racecard ON `report_racecard_id` = row_id
+	WHERE (`report_type` = "PreRace" OR `report_type` = "Track")
+		AND Horse_Name LIKE $P{Horse}
+	UNION
+	
+	SELECT `report_content` AS combined_report
+	 , 'Random Stable Inspection' AS combined_report_type
+		,random_inpsection_date AS combined_date
+		,"Random Stable Inspection" AS combined_meeting
+		,`horse_name` AS combined_horse
+		,"" AS combined_horse_number
+		,"" AS combined_race_number
+	FROM vetreports.vetreport_reports LEFT JOIN  vetreports.vet_report_random_stable_inspection_detail ON random_id = report_random_id
+	LEFT JOIN vetreports.vetreport_horses ON horse_id = random_horse_id LEFT JOIN vetreports.vetreport_horses_not_ran ON random_not_ran_yet_id = not_ran_id
+	WHERE `report_type` = "RandomStableInspection" 
+		AND (case when random_horse_id is null then	LCASE(not_ran_horse_name) LIKE LCASE($P{Horse}) else horse_name LIKE $P{Horse} end)
+	) AS MaxHorseDateNonRunEnquiries
+ORDER BY combined_date desc;]]>
+	</queryString>
+	<field name="combined_report" class="java.lang.String"/>
+	<field name="combined_horse" class="java.lang.String"/>
+	<field name="combined_date" class="java.sql.Timestamp"/>
+	<field name="combined_meeting" class="java.lang.String"/>
+	<field name="combined_horse_number" class="java.lang.String"/>
+	<field name="combined_race_number" class="java.lang.String"/>
+	<field name="combined_report_type" class="java.lang.String"/>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="90" height="20" uuid="0dc1a05c-1b2f-43ad-8edf-6e196eb9d70b"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Meeting]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="0" width="80" height="20" uuid="0670630a-d6aa-43e7-826e-5eca13261004"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="0" width="284" height="20" uuid="778bbdf5-ac24-4adb-bbcb-b8835cb56b11"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="0" width="100" height="20" uuid="38eeeafa-bd79-4074-a455-781eaf510485"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Report Type]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="-1" y="0" width="91" height="20" uuid="e707e37f-b1e2-4f0e-bebe-51571db9d013"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{combined_meeting}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="80" height="20" uuid="d1d45125-01e0-4005-ab57-479b0a0e1eb3"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yy").format($F{combined_date})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="270" y="0" width="284" height="20" uuid="7b97bbc1-97c0-4d5a-ac38-970eddcf8ec3"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{combined_report}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="0" width="100" height="20" uuid="1cbc9832-9158-41b8-ba36-c9d426b3cf98"/>
+				<box>
+					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{combined_report_type}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="65" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="60" height="20" uuid="526152d9-c891-4198-9959-015f0a22d0c4"/>
+				<textFieldExpression><![CDATA["Vet Notes:"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="64" width="553" height="1" uuid="795fa79f-654c-4783-aa98-d682aaf972b9"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="47" width="330" height="17" uuid="f93c3718-2ae7-4a90-b135-b47b075fd763"/>
+				<text><![CDATA[Take horse off future secondary veterinary lists: YES             NO ]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="240" y="43" width="21" height="21" uuid="d6a9fd6f-109f-416d-9c20-7c8cfb8402c3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="290" y="43" width="21" height="21" uuid="aa29baf5-bf0c-4fd7-8a25-78d4c222d7b1"/>
+			</rectangle>
+		</band>
+	</columnFooter>
+</jasperReport>

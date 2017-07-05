@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-11-11T09:19:21 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VetReport" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="71e6e4d8-161d-4ddf-a3fb-9037df407b32">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="Style1"/>
+	<parameter name="tclogo" class="java.awt.image.BufferedImage"/>
+	<parameter name="trainer" class="java.lang.String"/>
+	<parameter name="trainerId" class="java.lang.Integer"/>
+	<parameter name="startDate" class="java.lang.String"/>
+	<parameter name="earningsDateFrom" class="java.lang.String"/>
+	<parameter name="earningsDateTo" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT 1]]>
+	</queryString>
+	<field name="1" class="java.lang.Long"/>
+	<variable name="year" class="java.lang.Integer">
+		<variableExpression><![CDATA[(new SimpleDateFormat("yyyy")).format(new Date())]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="82" splitType="Stretch">
+			<rectangle radius="20">
+				<reportElement x="0" y="0" width="553" height="82" forecolor="#003366" backcolor="#FFFFFF" uuid="b7f6060c-f4ed-43e9-879b-0597de008ed4"/>
+				<graphicElement>
+					<pen lineWidth="5.0" lineStyle="Double"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="15" width="270" height="22" forecolor="#003366" uuid="eda63361-fd21-40f2-9a25-97c39a30d8a1"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Annual Staff Return ]]></text>
+			</staticText>
+			<image scaleImage="RealSize" isUsingCache="true">
+				<reportElement x="450" y="15" width="90" height="50" uuid="7d99d67f-e94e-4b02-a98b-5dd6b6c3fc4f">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{tclogo}]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="440" y="0" width="1" height="81" forecolor="#03518C" uuid="d48e595c-4a6b-4697-8082-54946e987c1f"/>
+			</line>
+			<textField>
+				<reportElement x="20" y="37" width="204" height="18" forecolor="#B52522" uuid="c7cc73a3-0c4c-4c47-ae6f-ad40bfce21e5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{trainer}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="72" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="30" width="553" height="1" uuid="6303e42d-41e2-4e04-8640-412fa132a8e1">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="1" y="7" width="553" height="23" uuid="a52135d9-3161-40e0-9fc5-57ca3df26218"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Current Employees]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="1" y="31" width="553" height="40" uuid="2a55d4fa-63b5-4d5b-bb8b-c161eeb7bc61"/>
+				<subreportParameter name="trainerId">
+					<subreportParameterExpression><![CDATA[$P{trainerId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="startDate">
+					<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="earningsDateFrom">
+					<subreportParameterExpression><![CDATA[$P{earningsDateFrom}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="earningsDateTo">
+					<subreportParameterExpression><![CDATA[$P{earningsDateTo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["/jasper/trainersReturn_current_employees_subreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="69">
+			<textField>
+				<reportElement x="1" y="7" width="553" height="23" uuid="8e8fa7dd-7a5c-4b09-aab8-31b467700dd1"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["People who left your Employment in" + $V{year} + "or Thereafter"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="30" width="553" height="1" uuid="3554cb80-3488-4dbc-a168-d1c72bb1711f">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<subreport>
+				<reportElement x="1" y="38" width="552" height="31" uuid="c707aad5-428d-492f-9252-b76cae77144a"/>
+				<subreportParameter name="trainerId">
+					<subreportParameterExpression><![CDATA[$P{trainerId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="startDate">
+					<subreportParameterExpression><![CDATA[$P{startDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="tclogo">
+					<subreportParameterExpression><![CDATA[$P{tclogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="trainer">
+					<subreportParameterExpression><![CDATA[$P{trainer}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="earningsDateFrom">
+					<subreportParameterExpression><![CDATA[$P{earningsDateFrom}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="earningsDateTo">
+					<subreportParameterExpression><![CDATA[$P{earningsDateTo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["/jasper/trainersReturn_lastyear_employees_subreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="62">
+				<staticText>
+					<reportElement x="1" y="0" width="552" height="51" uuid="0b6d1ad4-b992-4db0-bc6e-4856cb2b23e8"/>
+					<text><![CDATA[* Please note PPS Numbers entered will only appear on this form for employees who have "]]></text>
+				</staticText>
+				<subreportParameter name="previousYear">
+					<subreportParameterExpression><![CDATA[$P{previousYear}]]></subreportParameterExpression>
+				</subreportParameter>
+				<staticText>
+					<reportElement x="1" y="0" width="552" height="51" uuid="0b6d1ad4-b992-4db0-bc6e-4856cb2b23e8"/>
+					<text><![CDATA[*earnings. For persons employed in "]]></text>
+				</staticText>
+				<subreportParameter name="currYear">
+					<subreportParameterExpression><![CDATA[$P{currYear}]]></subreportParameterExpression>
+				</subreportParameter>
+			<staticText>
+				<reportElement x="1" y="0" width="552" height="51" uuid="0b6d1ad4-b992-4db0-bc6e-4856cb2b23e8"/>
+				<text><![CDATA[* only PPS number will be available to the Turf Club for verification purposes, however it is not linked to this form. ]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<noData>
+		<band height="46">
+			<textField>
+				<reportElement mode="Transparent" x="0" y="10" width="553" height="30" forecolor="#000000" backcolor="#FFFFFF" uuid="cab980d6-42b1-4eee-9e25-7b6bf1452964"/>
+				<box padding="0" topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
+				</textElement>
+				<textFieldExpression><![CDATA["There are no staff listings on our system for trainer: " +  $P{trainer}]]></textFieldExpression>
+			</textField>
+		</band>
+	</noData>
+</jasperReport>

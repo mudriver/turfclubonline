@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+    <meta data-th-name="_csrf" data-th-attr="content=${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta data-th-name="_csrf_header" data-th-attr="content=${_csrf.headerName}"/>
+
+<title>Ajax Upload and Resize with jQuery and PHP - Demo</title>
+<script type="text/javascript" data-th-src="@{/resources/js/plugins/fileupload/js/jquery-1.10.2.min.js}"></script>
+<script type="text/javascript" data-th-src="@{/resources/js/plugins/fileupload/js/jquery.form.min.js}"></script>
+
+
+<link data-th-href="@{/resources/js/plugins/fileupload/style/style.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="upload-wrapper">
+<div align="center">
+<h3>Attach your P35 to the Return</h3>
+<form  data-th-action="@{/rest/upload}" method="post" enctype="multipart/form-data" id="upload-form">
+<input name="file" id="imageInput" type="file" />
+<input type="submit"  id="submit-btn" value="Upload" />
+<img data-th-src="@{/resources/js/plugins/fileupload/images/ajax-loader.gif}" id="loading-img" style="display:none;" alt="Please Wait"/>
+</form>
+<div id="progressbox" style="display:none;"><div id="progressbar"></div ><div id="statustxt">0%</div></div>
+<div id="output"></div>
+</div>
+</div>
+
+</body>
+<script type="text/javascript" data-th-src="@{/resources/js/plugins/fileupload/upload.js}"></script>
+</html>

@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta data-th-name="_csrf" data-th-attr="content=${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta data-th-name="_csrf_header"
+	data-th-attr="content=${_csrf.headerName}" />
+<title data-th-text="#{stablestaff.list.page.title}">Title</title>
+
+<!-- Core CSS - Include with every page -->
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/bootstrap.css"
+	data-th-href="@{/resources/css/bootstrap.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/font-awesome-4.1.0/css/font-awesome.css"
+	data-th-href="@{/resources/font-awesome-4.1.0/css/font-awesome.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/sb-admin-2.css"
+	data-th-href="@{/resources/css/sb-admin-2.css}" />
+
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/overrides.css"
+	data-th-href="@{/resources/css/overrides.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/select2.css"
+	data-th-href="@{/resources/css/select2.css}" />
+<link data-th-href="@{/resources/js/plugins/fileupload/style/style.css}"
+	rel="stylesheet" type="text/css" />
+
+<!-- Styles for File Uploader -->
+<link rel="stylesheet" type="text/css"
+	data-th-href="@{/resources/angular/plugins/uploader/css/blueimp-gallery.min.css}"/>
+<link rel="stylesheet" type="text/css"
+	data-th-href="@{/resources/angular/plugins/uploader/css/jquery.fileupload.css}"/>
+<link rel="stylesheet" type="text/css"
+	data-th-href="@{/resources/angular/plugins/uploader/css/jquery.fileupload-ui.css}"/>
+
+
+<script type="text/javascript"
+	src="../../resources/js/jquery-2.1.1.min.js"
+	data-th-src="@{/resources/js/jquery-2.1.1.min.js}"></script>
+<script type="text/javascript" src="../../resources/js/validator.min.js"
+	data-th-src="@{/resources/js/validator.min.js}"></script>
+<script type="text/javascript"
+	src="../../resources/js/stableStaff/stablestaff-list.js"
+	data-th-src="@{/resources/js/stableStaff/stablestaff-list.js}"></script>
+<script type="text/javascript"
+	data-th-src="@{/resources/js/plugins/fileupload/js/jquery.form.min.js}"></script>
+<script type="text/javascript"
+	data-th-src="@{/resources/js/plugins/fileupload/upload.js}"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+     <![endif]-->
+</head>
+<body>
+	<div class="container-fluid">
+		<!-- /#wrapper -->
+
+		<div data-th-replace="fragments/stableStaffTopBar :: top-nav"></div>
+
+		<div id="noNewWarning" class="modal fade">
+			<div class="modal-dialog modal-lg" data-keyboard="false"
+				data-backdrop="static">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body text-center">
+						<p>No new employee's added</p>
+						<p>
+							<small class="text-danger">If you have non-card holding
+								employees working in your yard please add them now, otherwise
+								they will not be considered for inclusion in the life assurance
+								scheme and/or pension scheme. Proof of taxable Pay (P35) for all
+								employees must be submitted to the Turf Club. 
+								YOU MUST CLICK FINISH AND COMPLETE AGAIN TO FINISH YOUR RETURN.
+								 </small>
+
+
+						</p>
+						<h2 class="text-danger">Are you sure you have no other
+							employees?</h2>
+					</div>
+					<div class="modal-footer">
+						<div class='text-center'>
+							<button id="newEmployee" type="button" class="btn btn-default"
+								data-dismiss="modal">I want to add a new employee</button>
+							<button id="noNewEmployee" type="button" class="btn btn-default"
+								data-dismiss="modal">I have no other employees</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="please-wait" class="modal fade">
+			<div class="modal-dialog modal-lg" data-keyboard="false"
+				data-backdrop="static" tabindex="-1" role="dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body text-center">
+						<h2 class="text-info">Please wait while your report
+							loads.....</h2>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div id="no-p35-warning" class="modal fade">
+			<div class="modal-dialog modal-lg" data-keyboard="false"
+				data-backdrop="static">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body text-center">
+						<p>No P35/P60's Attached</p>
+						<p>
+							<small class="text-danger"><br />
+								If you have employees with taxable pay and you have not
+								attached a 2014
+								P35/P60's to this return you must
+								post or fax a copy of the P35/P60's (Attaching your account no. to it) to the Turf Club.
+								YOU MUST CLICK FINISH AND COMPLETE AGAIN TO FINISH YOUR RETURN.
+							</small>
+
+
+						</p>
+					</div>
+					<div class="modal-footer">
+						<div class='text-center'>
+							<button id="newEmployee" type="button" class="btn btn-default"
+								data-dismiss="modal">Ok</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="notCompleteWarning" class="modal fade">
+			<div class="modal-dialog modal-lg" data-keyboard="false"
+				data-backdrop="static">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body text-center">
+						<p>Your application is not complete</p>
+						<p>
+							<small class="text-danger">You must update all employees
+								and add any additional employees to complete this application. </small>
+
+
+						</p>
+					</div>
+					<div class="modal-footer">
+						<div class='text-center'>
+							<button id="ok" type="button" class="btn btn-default"
+								data-dismiss="modal">Ok</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div data-th-if='${saveMessage}' id="saveMessage" class="modal fade">
+			<div class="modal-dialog modal-lg" data-keyboard="false"
+				data-backdrop="static">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body text-center">
+						<p data-th-text='${saveMessage}'></p>
+
+					</div>
+					<div class="modal-footer">
+						<div class='text-center'>
+							<button id="ok" type="button" class="btn btn-default"
+								data-dismiss="modal">Ok</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="jumbotron">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-10">
+				<div id="main-page">
+					<h3 class="page-header removetopmargin"
+						data-th-text="#{stableStaff.list.title.label} + ${trainerName}"></h3>
+
+					<div data-th-if="${!viewOnly}" class="row">
+
+						<div class=" col-xs-12 text-center">
+							<div class="semitransparent box">
+
+								<h4>
+									<u class="text-danger">Instructions</u><br /> <br /> <small><ul
+											class="fa-ul">
+											<li><i class="fa-li fa fa-check-square"></i>Please
+												update the required details for each employee by clicking
+												the update button beside their name.</li>
+											<li><i class="fa-li fa fa-check-square"></i>A green tick
+												will appear beside their name when all required details are
+												updated.</li>
+											<li><i class="fa-li fa fa-check-square"></i>If an
+												employee no longer works for you there is a section to enter
+												the date of cessation of employment at your yard.</li>
+											<li><i class="fa-li fa fa-check-square"></i>You can only
+												finish your return when all employees are updated and have a
+												green tick</li>
+											<li><i class="fa-li fa fa-check-square"></i> Please add
+												any other employee with taxable pay not listed by clicking
+												add an employee.</li>
+										</ul></small><br /> <br />
+								</h4>
+							</div>
+
+
+						</div>
+
+
+
+
+					</div>
+					<div id="currentSection" data-th-if="${!employees.isEmpty()}">
+						<div class="row">
+							<h4 class="text-uppercase">
+								<u data-th-text="#{stablestaff.list.currentEmployees.label}"></u>
+							</h4>
+						</div>
+						<div class="panel panel-default table responsive">
+							<table id="reportTable"
+								class="table table-striped table-bordered table-hover">
+
+
+								<thead>
+
+									<tr>
+										<th class="col-xs-6" id="staffNameLabel"
+											data-th-text="#{stablestaff.list.name.label}"></th>
+										<th class="col-xs-3" data-th-if="${!viewOnly}"
+											data-th-text="#{stablestaff.list.action.label}"
+											align="center"></th>
+										<th class="col-xs-3"
+											data-th-text="#{stablestaff.list.complete.label}"
+											align="center"></th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr data-th-each="emp : ${employees}">
+										<td
+											data-th-text="${emp.getEmployeesFirstname() + ' ' + emp.getEmployeesSurname()}">Name</td>
+										<td data-th-if="${!viewOnly}" align="center"><a
+											data-th-if="${emp.isUpdated()}" href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(id=${emp.getEmployeesEmployeeId()},type=edit)}">
+												<button type="button" class="btn btn-default">
+													<span class="glyphicon glyphicon-check"></span> <span><strong
+														data-th-text="' Edit'"></strong></span>
+												</button>
+										</a> <a data-th-if="${!emp.isUpdated()}" href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(id=${emp.getEmployeesEmployeeId()},type=update)}">
+												<button type="button" class="btn btn-danger">
+													<span class="glyphicon glyphicon-share"></span> <span><strong
+														data-th-text="' Update'"></strong></span>
+												</button>
+										</a></td>
+										<td align="center"><img class='complete'
+											data-th-if="${emp.isUpdated()}"
+											src="../../resources/img/greentick.png"
+											data-th-src="@{/resources/img/greentick.png}" alt="Complete"
+											height="42" width="42"></img><img class='notComplete'
+											data-th-if="${!emp.isUpdated()}"
+											src="../../resources/img/redx.jpg"
+											data-th-src="@{/resources/img/redx.jpg}" alt="Not Complete"
+											height="42" width="42"></img></td>
+									</tr>
+
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div id="leftSection" data-th-if="${!leftEmployees.isEmpty()}">
+						<div class="row">
+							<h4 class="text-uppercase">
+								<u id="leftHeader"
+									data-th-text="#{stablestaff.list.leftEmployees.label}"></u>
+							</h4>
+						</div>
+						<div class="panel panel-default table responsive">
+							<table id="leftTable"
+								class="table table-striped table-bordered table-hover">
+
+
+
+
+
+								<thead>
+
+									<tr>
+										<th class="col-xs-6" id="staffNameLabel"
+											data-th-text="#{stablestaff.list.name.label}"></th>
+										<th class="col-xs-3"
+											data-th-text="#{stablestaff.list.action.label}"
+											data-th-if="${!viewOnly}" align="center"></th>
+										<th class="col-xs-3"
+											data-th-text="#{stablestaff.list.complete.label}"
+											align="center"></th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr data-th-each="leftEmp : ${leftEmployees}">
+										<td
+											data-th-text="${leftEmp.getEmployeesFirstname() + ' ' + leftEmp.getEmployeesSurname()}">Name</td>
+										<td align="center"><a
+											data-th-if="${leftEmp.isUpdated()} and ${!viewOnly}" href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(id=${leftEmp.getEmployeesEmployeeId()},type=edit)}">
+												<button type="button" class="btn btn-default">
+													<span class="glyphicon glyphicon-check"></span> <span><strong
+														data-th-text="' Edit'"></strong></span>
+												</button>
+										</a> <a data-th-if="${!leftEmp.isUpdated()} and ${!viewOnly}"
+											href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(id=${leftEmp.getEmployeesEmployeeId()},type=update)}">
+												<button type="button" class="btn btn-danger">
+													<span class="glyphicon glyphicon-share"></span> <span><strong
+														data-th-text="' Update'"></strong></span>
+												</button>
+										</a></td>
+										<td align="center"><img class='complete'
+											data-th-if="${leftEmp.isUpdated()}"
+											src="../../resources/img/greentick.png"
+											data-th-src="@{/resources/img/greentick.png}" alt="Complete"
+											height="42" width="42"></img><img class='notComplete'
+											data-th-if="${!leftEmp.isUpdated()}"
+											src="../../resources/img/redx.jpg"
+											data-th-src="@{/resources/img/redx.jpg}" alt="Not Complete"
+											height="42" width="42"></img></td>
+									</tr>
+
+
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+					<div id="thisYearSection"
+						data-th-if="${!over65Employees.isEmpty()}">
+						<div class="row">
+							<h4 class="text-uppercase">
+								<u id="over65Header"
+									data-th-text="#{stablestaff.list.over65Employees.label}"></u>
+							</h4>
+						</div>
+						<div class="panel panel-default table responsive">
+							<table id="newThisYearTable"
+								class="table table-striped table-bordered table-hover">
+
+
+
+
+
+								<thead>
+
+									<tr>
+										<th class="col-xs-6" id="staffNameLabel"
+											data-th-text="#{stablestaff.list.name.label}"></th>
+										<th class="col-xs-3"
+											data-th-text="#{stablestaff.list.action.label}"
+											data-th-if="${!viewOnly}" align="center"></th>
+										<th class="col-xs-3"
+											data-th-text="#{stablestaff.list.complete.label}"
+											align="center"></th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr data-th-each="over65Emp : ${over65Employees}">
+										<td
+											data-th-text="${over65Emp.getEmployeesFirstname() + ' ' + over65Emp.getEmployeesSurname()}">Name</td>
+										<td data-th-if="${!viewOnly}" align="center">No Data
+											Required For This Employee</td>
+										<td align="center"><img class='complete'
+											src="../../resources/img/greentick.png"
+											data-th-src="@{/resources/img/greentick.png}" alt="Complete"
+											height="42" width="42"></img></td>
+									</tr>
+
+
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+
+					<div data-th-if="${!viewOnly}">
+						<div class="row new-employees">
+							<div class="col-xs-12">
+								<h4 class="text-uppercase">
+									<u data-th-text="#{stablestaff.list.newEmployees.label}"></u>
+								</h4>
+								<div class="overlay-solid">
+									Please provide details of any employees involved in your<br />
+									training establishment who are in receipt of taxable pay and
+									are not listed above<br /> (ie. appears on your annual P35) as
+									they may qualify for<br /> membership of the new life assurance
+									scheme and/or the new<br /> pension scheme.
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default table responsive">
+							<table id="newTable"
+								class="table table-striped table-bordered table-hover">
+
+
+
+
+								<tbody>
+
+									<tr>
+										<td><strong>Click the (Add Button) to return
+												another employee:</strong></td>
+										<td align="center"><a href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(type=new)}"><button
+													type="button" class="btn btn-success" id='new'>
+													<span class="glyphicon glyphicon-plus"></span> <span><strong
+														class="text-center" data-th-text=" Add"></strong></span>
+												</button></a></td>
+										<td></td>
+									</tr>
+									<tr class="new-employee-section"
+										data-th-each="newEmp : ${newEmployees}">
+										<td
+											data-th-text="${newEmp.getEmployeesFirstname() + ' ' + newEmp.getEmployeesSurname()}">Name</td>
+										<td data-th-if="${!viewOnly}" align="center"><a href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(id=${newEmp.getEmployeesEmployeeId()},type=edit)}">
+												<button type="button" class="btn btn-default">
+													<span class="glyphicon glyphicon-check"></span> <span><strong
+														data-th-text="' Edit'"></strong></span>
+												</button>
+										</a></td>
+										<td align="center"><img class='complete'
+											data-th-if="${newEmp.isUpdated()}"
+											src="../../resources/img/greentick.png"
+											data-th-src="@{/resources/img/greentick.png}" alt="Complete"
+											height="42" width="42"></img><img class='notComplete'
+											data-th-if="${!newEmp.isUpdated()}"
+											src="../../resources/img/redx.jpg"
+											data-th-src="@{/resources/img/redx.jpg}" alt="Not Complete"
+											height="42" width="42"></img></td>
+									</tr>
+
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+					<div data-th-if="${viewOnly} and ${newEmployees.size() > 0}">
+						<div class="row new-employees">
+							<div class="col-xs-12">
+								<h4 class="text-uppercase">
+									<u data-th-text="#{stablestaff.list.newEmployeesView.label}"></u>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default table responsive">
+							<table id="newTable"
+								class="table table-striped table-bordered table-hover">
+
+
+
+
+								<tbody>
+
+
+									<tr class="new-employee-section"
+										data-th-each="newEmp : ${newEmployees}">
+										<td
+											data-th-text="${newEmp.getEmployeesFirstname() + ' ' + newEmp.getEmployeesSurname()}">Name</td>
+										<td data-th-if="${!viewOnly}" align="center"><a href="#"
+											data-th-href="@{/trainersEmployeesOnline/edit(id=${newEmp.getEmployeesEmployeeId()},type=edit)}">
+												<button type="button" class="btn btn-default">
+													<span class="glyphicon glyphicon-check"></span> <span><strong
+														data-th-text="' Edit'"></strong></span>
+												</button>
+										</a></td>
+										<td align="center"><img class='complete'
+											data-th-if="${newEmp.isUpdated()}"
+											src="../../resources/img/greentick.png"
+											data-th-src="@{/resources/img/greentick.png}" alt="Complete"
+											height="42" width="42"></img><img class='notComplete'
+											data-th-if="${!newEmp.isUpdated()}"
+											src="../../resources/img/redx.jpg"
+											data-th-src="@{/resources/img/redx.jpg}" alt="Not Complete"
+											height="42" width="42"></img></td>
+									</tr>
+
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+
+					<div data-th-if="${!viewOnly}" class="row new-employees">
+						<div class="col-xs-12">
+							<h4 class="text-uppercase">
+								<u data-th-text="#{stablestaff.list.uploadP35.label}"></u><u data-th-text="${(#dates.year(#dates.createNow()))-1}"></u>
+							</h4>
+						</div>
+					</div>
+					<div data-th-if="${!viewOnly}" class="row form-group"
+						id="upload-wrapper">
+						<div class="col-xs-12" align="center">
+
+							
+							
+						
+						<form id="fileupload" 
+							method="POST"  enctype="multipart/form-data" data-ng-app="uploaderApp"
+							data-ng-controller="MainFileUploadController" data-th-attr='data-ng-init=${"init(&#39;" + #httpServletRequest.userPrincipal?.name + "&#39;)"}'
+							data-file-upload="options"
+							data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
+							<!-- Redirect browsers with JavaScript disabled to the origin page -->
+							<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+							<div id="documents-uploaded" data-ng-show="queue.length > 0">
+								<p>{{'You have uploaded ' + queue.length + ' P35/P60 document(s)'}}</p>
+							</div>
+						
+							<div class="row fileupload-buttonbar">
+								<div class="col-lg-7">
+									<!-- The fileinput-button span is used to style the file input field as button -->
+									<span class="btn btn-success fileinput-button"
+										data-ng-class="{disabled: disabled}"> <i
+										class="glyphicon glyphicon-plus"></i> <span>Add
+											files...</span> <input type="file" name="files[]"
+										multiple="multiple" data-ng-disabled="disabled" accept=".pdf,.jpg,.jpeg,.tiff,.png" />
+									</span>
+									<button type="button" class="btn btn-primary start"
+										data-ng-click="submit()">
+										<i class="glyphicon glyphicon-upload"></i> <span>Start
+											upload</span>
+									</button>
+									<button type="button" class="btn btn-warning cancel"
+										data-ng-click="cancel()">
+										<i class="glyphicon glyphicon-ban-circle"></i> <span>Cancel
+											upload</span>
+									</button>
+									<!-- The global file processing state -->
+									<span class="fileupload-process"></span>
+									<div class="row text-warning">Accepted file formats .pdf, .jpg, .jpeg, .tiff, .png</div>
+								</div>
+								<!-- The global progress state -->
+								<div class="col-lg-5 fade" data-ng-class="{in: active()}">
+									<!-- The global progress bar -->
+									<div class="progress progress-striped active"
+										data-file-upload-progress="progress()">
+										<div class="progress-bar progress-bar-success"
+											data-ng-style="{width: num + '%'}"></div>
+									</div>
+									<!-- The extended global progress state -->
+									<div class="progress-extended">&nbsp;</div>
+								</div>
+							</div>
+							<!-- The table listing the files available for upload/download -->
+							<table class="table table-striped files ng-cloak">
+								<tr data-ng-repeat="file in queue"
+									data-ng-class="{'processing': file.$processing()}">
+									<td data-ng-switch="" data-on="!!file.thumbnailUrl">
+										<div class="preview" data-ng-switch-when="true">
+											<a data-ng-href="{{file.url}}" title="{{file.name}}"
+												download="{{file.name}}" data-gallery=""><img
+												data-ng-src="{{file.thumbnailUrl}}" alt="" /></a>
+										</div>
+										<div class="preview" data-ng-switch-default=""
+											data-file-upload-preview="file"></div>
+									</td>
+									<td>
+										<p class="name" data-ng-switch="" data-on="!!file.url">
+											<span data-ng-switch-when="true" data-ng-switch=""
+												data-on="!!file.thumbnailUrl"> <a
+												data-ng-switch-when="true" data-ng-href="{{file.url}}"
+												title="{{file.name}}" download="{{file.name}}"
+												data-gallery="">{{file.name}}</a> <a
+												data-ng-switch-default="" data-ng-href="{{file.url}}"
+												title="{{file.name}}" download="{{file.name}}">{{file.name}}</a>
+											</span> <span data-ng-switch-default="">{{file.name}}</span>
+										</p> <strong data-ng-show="file.error" class="error text-danger">{{file.error}}</strong>
+									</td>
+									<td>
+										<p class="size">{{file.size | formatFileSize}}</p>
+										<div class="progress progress-striped active fade"
+											data-ng-class="{pending: 'in'}[file.$state()]"
+											data-file-upload-progress="file.$progress()">
+											<div class="progress-bar progress-bar-success"
+												data-ng-style="{width: num + '%'}"></div>
+										</div>
+									</td>
+									<td>
+										<button type="button" class="btn btn-primary start"
+											data-ng-click="file.$submit()"
+											data-ng-hide="!file.$submit || options.autoUpload"
+											data-ng-disabled="file.$state() == 'pending' || file.$state() == 'rejected'">
+											<i class="glyphicon glyphicon-upload"></i> <span>Start</span>
+										</button>
+										<button type="button" class="btn btn-warning cancel"
+											data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+											<i class="glyphicon glyphicon-ban-circle"></i> <span>Cancel</span>
+										</button>
+										<button data-ng-controller="FileDestroyController"
+											type="button" class="btn btn-danger destroy"
+											data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
+											<i class="glyphicon glyphicon-trash"></i> <span>Delete</span>
+										</button>
+									</td>
+								</tr>
+							</table>
+						</form>
+
+						</div>
+					</div>
+					<div data-th-if="${viewOnly} and ${pdfUploaded}"
+						class="row text-center">
+						<p>
+							<small class="white ">The Turf Club have recieved P35/P60
+								document(s)</small>
+						</p>
+					</div>
+					<div data-th-if="${viewOnly} and ${!pdfUploaded}"
+						class="row text-center">
+						<p>
+							<small class="white ">The Turf Club have NOT recieved P35/P60
+								document(s)</small>
+						</p>
+					</div>
+					<form data-th-if="${!viewOnly}" id="listEmployeeForm"
+						class="form-horizontal" action="#"
+						data-th-action="@{/trainersEmployeesOnline/complete}" method="get">
+						<input type='hidden' id='noNew'></input>
+
+
+
+						<div class="row">
+							<h5 class="white text-center"
+								data-th-text="#{stableStaff.list.contactHeader.label}"></h5>
+
+							<div class="col-xs-6 text-right">
+								<div class="form-group">
+									<div class="col-xs-6  "></div>
+									<div class="col-xs-6 text-left ">
+										<label class="control-label" for="contact-name"
+											data-th-text="#{stableStaff.list.contactName.label}"></label>
+
+
+										<input required="required" class="form-control"
+											data-th-field="${trainer.trainerContactName}" type='text'
+											maxLength="200" id='contact-name'></input><span
+											class="help-block with-errors"></span>
+
+									</div>
+
+								</div>
+							</div>
+							<div class="col-xs-6">
+								<div class="form-group">
+
+									<div class="col-xs-6 text-left">
+										<label class="control-label" for="contact-phone"
+											data-th-text="#{stableStaff.list.contactPhone.label}"></label>
+
+										<input class="form-control"
+											data-th-field="${trainer.trainerContactPhone}" type='text'
+											required="required" maxLength="20" id='contact-phone'></input>
+										<span class="help-block with-errors"></span>
+									</div>
+
+									<div class="col-xs-6  "></div>
+								</div>
+							</div>
+
+
+						</div>
+
+						<div class="row form-group buttons">
+							<div class="col-xs-3 text-right"></div>
+							<div class="col-xs-6 text-center">
+
+
+
+
+
+								<a href="#"
+									data-th-href="@{/logout(logout='You have successfully logged out. Do not forget to complete your return at a later time.')}">
+									<button id='cancelList' type="button"
+										class="btn btn-default active">
+										<span class="glyphicon glyphicon-remove-circle"></span><span
+											class="text-center"><strong
+											data-th-text="' ' + #{stableStaff.list.cancel.button}"></strong></span>
+									</button>
+								</a>
+								<button id='pdf-show' type="button" class="btn btn-primary">
+									<span class="glyphicon glyphicons-fax"></span><span
+										class="text-center"><strong
+										data-th-text="' ' + #{stableStaff.list.print.button}"></strong></span>
+								</button>
+								<button type="submit" class="btn btn-primary">
+									<span class="glyphicon glyphicon-ok-circle"></span><span
+										class="text-center"><strong
+										data-th-text="' ' + #{stableStaff.list.save.button}"></strong></span>
+								</button>
+
+							</div>
+							<div class="col-xs-3"></div>
+
+
+
+						</div>
+					</form>
+					<form data-th-if="${viewOnly}" id="listEmployeeForm"
+						class="form-horizontal" action="#" method="get">
+						<input type='hidden' id='noNew'></input>
+
+
+						<div class="row form-group buttons">
+							<div class="col-xs-3 text-right"></div>
+							<div class="col-xs-6 text-center">
+
+
+
+
+
+								<a href="#"
+									data-th-href="@{/logout(logout='You have successfully logged out.')}">
+									<button id='cancelList' type="button"
+										class="btn btn-default active">
+										<span class="glyphicon glyphicon-remove-circle"></span><span
+											class="text-center"><strong
+											data-th-text="' ' + #{stableStaff.list.logout.button}"></strong></span>
+									</button>
+								</a>
+								<button id='pdf-show-view' type="button" class="btn btn-primary">
+									<span class="glyphicon glyphicons-fax"></span><span
+										class="text-center"><strong
+										data-th-text="' ' + #{stableStaff.list.print.button}"></strong></span>
+								</button>
+
+
+							</div>
+							<div class="col-xs-3"></div>
+
+
+
+						</div>
+					</form>
+				</div>
+
+				<div class="row">
+
+					<div id="pdf-section" class="col-xs-12 text-center">
+
+
+						<button id="pdf-close" type="button" class="btn btn-primary onoff"
+							data-th-text="#{stableStaff.list.pdfClose.button}">OK</button>
+
+
+						<div id="pdf-preview">
+							<object id="pdf" standby="please wait for pdf to load"
+								type="application/pdf" data="#" height="1000"></object>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="col-lg-1"></div>
+
+			<!-- End Submit Form -->
+
+		</div>
+		<!-- page wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap.min.js"
+		data-th-src="@{/resources/js/bootstrap.min.js}"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+	<script src="../../resources/js/select2.js" type="text/javascript"
+		data-th-src="@{/resources/js/select2.js}"></script>
+	<!--  Scripts for angular file uploader -->
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+	<script
+		data-th-src="@{/resources/angular/plugins/uploader/js/load-image.all.min.js}"></script>
+	<script
+		data-th-src="@{/resources/angular/plugins/uploader/js/jquery.blueimp-gallery.min.js}"></script>
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.iframe-transport.js}"></script>
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload.js}"></script>
+	<!-- The File Upload processing plugin -->
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload-process.js}"></script>
+	<!-- The File Upload image preview & resize plugin -->
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload-image.js}"></script>
+	<!-- The File Upload audio preview plugin -->
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload-audio.js}"></script>
+	<!-- The File Upload video preview plugin -->
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload-video.js}"></script>
+	<!-- The File Upload validation plugin -->
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload-validate.js}"></script>
+	<!-- The File Upload Angular JS module -->
+	<script data-th-src="@{/resources/angular/plugins/uploader/js/jquery.fileupload-angular.js}"></script>
+	<!-- The main application script -->
+	<script data-th-src="@{/resources/angular/uploader-app/app.js}"></script>
+
+</body>
+</html>

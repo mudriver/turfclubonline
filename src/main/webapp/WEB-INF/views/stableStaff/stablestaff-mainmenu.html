@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-fragment="header">
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title data-th-text="#{stablestaff.list.page.title}">Title</title>
+
+<!-- Core CSS - Include with every page -->
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/bootstrap.css"
+	data-th-href="@{/resources/css/bootstrap.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/font-awesome-4.1.0/css/font-awesome.css"
+	data-th-href="@{/resources/font-awesome-4.1.0/css/font-awesome.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/sb-admin-2.css"
+	data-th-href="@{/resources/css/sb-admin-2.css}" />
+
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/overrides.css"
+	data-th-href="@{/resources/css/overrides.css}" />
+<link type="text/css" rel="stylesheet"
+	href="../../resources/css/select2.css"
+	data-th-href="@{/resources/css/select2.css}" />
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+<script type="text/javascript"
+	src="../../resources/js/jquery-2.1.1.min.js"
+	data-th-src="@{/resources/js/jquery-2.1.1.min.js}"></script>
+<script type="text/javascript"
+	src="../../resources/js/stableStaff/stablestaff-list.js"
+	data-th-src="@{/resources/js/stableStaff/stablestaff-list.js}"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+     <![endif]-->
+</head>
+<body>
+	<div class="container-fluid">
+		<!-- /#wrapper -->
+
+		<div data-th-replace="fragments/stableStaffTopBar :: top-nav"></div>
+
+
+
+		<div class="jumbotron">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-8">
+				<h3 class="page-header"
+					data-th-text="#{stableStaff.main.title.label}"></h3>
+				
+					<div data-th-if="${!returnComplete}" class="row">
+			
+						<div class=" col-xs-12 text-center">
+					    <h4 class="semitransparent"><br/><small>
+					    Welcome to the stable staff online system. 
+					    You are required to complete your annual return by the <span data-th-text="${returnDate}"></span>.
+					    Please select (Annual Return) below to complete. 
+					    </small><br/><br/></h4>
+							
+
+						</div>
+					
+					</div>
+					
+					<div data-th-if="${returnComplete}" class="row">
+			
+						<div class=" col-xs-12 text-center">
+					    <h4 class="semitransparent"><br/><small>
+					    Welcome to the stable staff online system. You have fully completed your annual return.
+					    Click (View Annual Return) to see a list of employees on your return. 
+					    You cannot edit information as you have already completed your return. 
+					    </small><br/><br/></h4>
+							
+
+						</div>
+					
+					</div>
+
+					
+					
+					<form id="menuForm" 
+					class="form-horizontal" action="#"
+					data-th-action="@{/trainersEmployeesOnline/list}"
+					method="get" >
+					
+					<div class="row form-group buttons">
+						<div class="col-xs-3 text-right"></div>
+						<div class="col-xs-6 text-center">
+
+
+
+
+							<button type="submit" class="btn btn-primary"
+								><span class="glyphicon glyphicon-ok-circle"></span><span class="text-center" ><strong data-th-if="${returnComplete}" data-th-text="' ' + #{stableStaff.menu.annualComplete.button}"></strong><strong data-th-if="${!returnComplete}" data-th-text="' ' + #{stableStaff.menu.annual.button}"></strong></span></button>
+					
+
+						</div>
+						<div class="col-xs-3"></div>
+
+
+
+					</div>
+				</form>
+
+
+</div>
+<div class="col-lg-2"></div>
+			</div>
+	
+
+			<!-- End Submit Form -->
+
+		</div>
+		<!-- page wrapper -->
+
+	<!-- /#wrapper -->
+	<script type="text/javascript"
+		src="../../resources/js/bootstrap.min.js"
+		data-th-src="@{/resources/js/bootstrap.min.js}"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+	<script src="../../resources/js/select2.js" type="text/javascript"
+		data-th-src="@{/resources/js/select2.js}"></script>
+
+
+</body>
+</html>

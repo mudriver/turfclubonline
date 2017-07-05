@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//src/main/resources/jasper/VetReports.jrxml=UTF-8
+encoding//src/main/resources/jasper/trainersReturn.jrxml=UTF-8
+encoding//src/main/resources/jasper/trainersReturn_current_employees_subreport.jrxml=UTF-8
+encoding//src/main/resources/jasper/trainersReturn_lastyear_employees_subreport.jrxml=UTF-8
