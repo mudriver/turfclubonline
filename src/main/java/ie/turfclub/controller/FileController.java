@@ -3,6 +3,7 @@ package ie.turfclub.controller;
 
 import ie.turfclub.model.login.User;
 import ie.turfclub.model.stableStaff.TeFile;
+import ie.turfclub.model.stableStaff.TeTrainers;
 import ie.turfclub.service.stableStaff.FileService;
 
 import java.awt.image.BufferedImage;
@@ -48,7 +49,7 @@ public class FileController {
     @Autowired
     private FileService fileService;
    //private String fileUploadDirectory = "/home/FTP-shared/stableread/ftp";
-    private String fileUploadDirectory = "C:/files";
+    private String fileUploadDirectory = "C:/eclipse-kepler/TurfClub/TurfClubPrograms/upload/ftp";
  
     
     @RequestMapping(value = "/upload/{id}", method = RequestMethod.GET)

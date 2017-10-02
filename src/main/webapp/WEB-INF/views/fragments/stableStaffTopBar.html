@@ -57,6 +57,7 @@
  
             <ul class="nav navbar-top-links navbar-right" data-th-with="currentUser=${#httpServletRequest.userPrincipal?.name}">
                     <li><a data-th-href="@{/trainersEmployeesOnline/}"            >Home</a></li>
+                    <li><a data-th-href="@{/employee/add}"            >Add Employee</a></li>
                     <li class="dropdown" data-th-if="${currentUser != null}">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                           <i class="fa fa-user fa-fw"></i>

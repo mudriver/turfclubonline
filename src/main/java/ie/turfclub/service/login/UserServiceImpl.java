@@ -11,9 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 
 
@@ -36,12 +39,26 @@ public class UserServiceImpl implements UserService {
         return sessionFactory.getCurrentSession();
     }
     
-    
+    @Override
+    public User findByEmail(String userName) {
+    	System.out.println("Username : "+userName);
+    	Query query = getCurrentSession().createQuery("from User where user_login = :usersName ");
+        query.setString("usersName", userName);
+         
+        logger.info(query.toString());
+        if (query.list().size() == 0 ) {
+        	return null;
+        } else {
+        	List<User> users = query.list();
+        	return users.get(0);
+        }
+    }
 
     
     //TODO Dummy role added temporarily 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    	System.out.println("Username : "+username);
     	Query query = getCurrentSession().createQuery("from User where user_login = :usersName ");
         query.setString("usersName", username);
          

@@ -187,13 +187,12 @@
 				HunterCert</h3>
 
 
-
-			<form id="employeeEditForm" class="form-horizontal" action="#"
-				data-th-action="@{/trainersEmployeesOnline/save(saveMessage='You have successfullly updated employee: ' + ${employee.employeesFirstname} + ' ' + ${employee.employeesSurname})}"
+			<!-- /trainersEmployeesOnline/save(saveMessage='You have successfullly updated employee: ' + ${employee.employeesFirstname} + ' ' + ${employee.employeesSurname}) -->
+			  <form id="employeeEditForm" class="form-horizontal" action="#"
+				data-th-action="@{/trainersEmployeesOnline/save}"
 				method="post">
-
-
-
+				
+				
 				<input type='hidden' id="employeeId" data-th-field="${employee.employeesEmployeeId}"></input>
 				<input data-th-field="${employee.employeesHasTaxableEarnings}"
 					type='hidden' id='has-taxable'></input> <input

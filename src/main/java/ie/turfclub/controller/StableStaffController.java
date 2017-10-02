@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping(value = "/trainersEmployeesOnline")
@@ -174,7 +175,8 @@ public class StableStaffController {
 		Calendar now = Calendar.getInstance();
 		//CHANGE EARNINGS YEAR HERE
 		//Change here to -1 when earnings for 2015 should be entered  
-		now.add(Calendar.YEAR, -2);
+		//NEED TO CHANGE AS PER REQUIREMENT
+		now.add(Calendar.YEAR, -3);
 		model.addAttribute("currentYear", now.get(Calendar.YEAR));
 
 		return "stablestaff-edit";
@@ -186,7 +188,7 @@ public class StableStaffController {
 			Authentication auth,
 			@ModelAttribute TeEmployees employeeUpdated,
 			@ModelAttribute TeEmployentHistory history,
-			@RequestParam(value = "saveMessage", required = true) String saveMessage) {
+			@RequestParam(value = "saveMessage", required = false) String saveMessage, RedirectAttributes redirectAttributes) {
 
 		Object principal = auth.getPrincipal();
 		User user = (User) principal;
@@ -654,6 +656,8 @@ public class StableStaffController {
 			// save history record for employee
 			for (TeEmployentHistory newHistory : histories) {
 
+				if(newHistory.getEhEmploymentCategory() != null && newHistory.getEhEmploymentCategory().length() == 0) newHistory.setEhEmploymentCategory(null);
+				if(newHistory.getEhHoursWorked() != null && newHistory.getEhHoursWorked().length() == 0) newHistory.setEhHoursWorked(null);
 				if (originalEmployee.getEmployeesIsNew()) {
 					newHistory.setTeTrainers(trainer);
 					newHistory.setTeEmployees(originalEmployee);
@@ -716,8 +720,10 @@ public class StableStaffController {
 
 		}
 
-		return "redirect:/trainersEmployeesOnline/list?saveMessage="
-				+ saveMessage;
+		redirectAttributes.addFlashAttribute("saveMessage", "You have successfully updated employee : "+originalEmployee.getEmployeesFirstname()+" "+originalEmployee.getEmployeesSurname());
+		/*return "redirect:/trainersEmployeesOnline/list?saveMessage="
+				+ saveMessage;*/
+		return "redirect:/trainersEmployeesOnline/list";
 
 	}
 
@@ -897,6 +903,7 @@ public class StableStaffController {
 		try {
 			conn = DriverManager
 					.getConnection("jdbc:mysql://127.0.0.1:3000/trainers?user=root&password=password");
+					//.getConnection("jdbc:mysql://www.turfclub.ie:3306/trainers?user=root&password=1790@estab");
 			BufferedImage image = null;
 			try {
 				image = ImageIO.read(this.getClass().getResourceAsStream(

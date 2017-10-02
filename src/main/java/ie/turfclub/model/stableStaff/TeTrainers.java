@@ -3,12 +3,16 @@ package ie.turfclub.model.stableStaff;
 
 // Generated 28-Apr-2015 14:57:35 by Hibernate Tools 3.4.0.CR1
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 
@@ -23,6 +27,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Formula;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -55,6 +60,7 @@ public class TeTrainers implements java.io.Serializable {
 	private String trainerCurragh;
 	private Date trainerInsuranceExpiry;
 	private boolean trainerReturnComplete;
+	private VerifiedStatus trainerVerifiedStatus;
 	private boolean trainerP35Attached;
 	private int trainerLastRacecardId;
 	private Date trainerTimeEntered;
@@ -62,8 +68,26 @@ public class TeTrainers implements java.io.Serializable {
 	private String trainerContactName;
 	private String trainerContactPhone;
 	private String trainerNotes;
+	private  Set<TeFile> trainerFile;
+	private Set<TeEmployeeTrainerVerified> teEmployeeTrainerVerified = new HashSet(0);
 	private Set<TeEmployentHistory> teEmployentHistories = new HashSet(0);
+	private Set<TeAuthorisedReps> teAuthorisedReps = new HashSet(0);
 	private boolean canEdit = false;
+	private boolean hasDocuments = false;
+	private boolean canUpload = false;
+	private String pwd;
+	private String title;
+	private String sex;
+	private String county;
+	private String postCode;
+	private String country;
+	private String nationality;
+	private String maritalStatus;
+	private String spouseName;
+	
+	public static enum VerifiedStatus{
+		NOTVERIFIED,PENDING,VERIFIED,RESET
+	}
 
 	public TeTrainers() {
 	}
@@ -446,7 +470,135 @@ public class TeTrainers implements java.io.Serializable {
 	public void setCanEdit(boolean canEdit) {
 		this.canEdit = canEdit;
 	}
+	
+	@Column(name="trainer_pwd")
+	public String getPwd() {
+		return pwd;
+	}
 
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	@Transient
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	@Transient
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	@Transient
+	public String getCounty() {
+		return county;
+	}
+
+	public void setCounty(String county) {
+		this.county = county;
+	}
+
+	@Transient
+	public String getPostCode() {
+		return postCode;
+	}
+
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
+
+	@Transient
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	@Transient
+	public String getNationality() {
+		return nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	@Transient
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	@Transient
+	public String getSpouseName() {
+		return spouseName;
+	}
+
+	public void setSpouseName(String spouseName) {
+		this.spouseName = spouseName;
+	}
+
+	@Column(name = "trainer_return_verified")
+	@Enumerated(EnumType.STRING)
+	public VerifiedStatus getTrainerVerifiedStatus() {
+		return trainerVerifiedStatus;
+	}
+
+	public void setTrainerVerifiedStatus(VerifiedStatus trainerVerifiedStatus) {
+		this.trainerVerifiedStatus = trainerVerifiedStatus;
+	}
 	
+	/*@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fileUserId")
+	public Set<TeFile> getTrainerFile() {
+		return trainerFile;
+	}
+
+	public void setTrainerFile(Set<TeFile> trainerFile) {
+		this.trainerFile = trainerFile;
+	}*/
 	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "trainerId")
+	public Set<TeEmployeeTrainerVerified> getTeEmployeeTrainerVerified() {
+		return teEmployeeTrainerVerified;
+	}
+
+	public void setTeEmployeeTrainerVerified(
+			Set<TeEmployeeTrainerVerified> teEmployeeTrainerVerified) {
+		this.teEmployeeTrainerVerified = teEmployeeTrainerVerified;
+	}
+	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "authrepsTrainerId")
+	public Set<TeAuthorisedReps> getTeAuthorisedReps() {
+		return teAuthorisedReps;
+	}
+
+	public void setTeAuthorisedReps(Set<TeAuthorisedReps> teAuthorisedReps) {
+		this.teAuthorisedReps = teAuthorisedReps;
+	}
+	
+	@Transient
+	public boolean isHasDocuments() {
+		return hasDocuments;
+	}
+
+	public void setHasDocuments(boolean hasDocuments) {
+		this.hasDocuments = hasDocuments;
+	}
 }
